@@ -15,7 +15,7 @@ int sucs_orders = 0;
 int failed_orders = 0;
 char Buffer[256] = { 0 };
 int random_item;
-double total_price; // Removed the global total_price
+double total_price; 
 int error_flag;
 int sucs_request;
 int failed_request;
@@ -26,7 +26,7 @@ struct Product {
     int item_count;
 };
 
-struct Product catalog[MAX_ITEMS]; // Adjusted to use MAX_ITEMS
+struct Product catalog[MAX_ITEMS]; 
 
 void initialize_catalog() {
     for (int i = 0; i < MAX_ITEMS; i++) {
