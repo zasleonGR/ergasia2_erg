@@ -78,7 +78,7 @@ int main() {
     initialize_prices();
 
     for (int y = 0; y < CLIENTS; y++) {
-        printf("CLIENT %d\n", y + 1);
+        printf("CLIENT %d\n \n", y + 1);
         total_price = 0.0; // Reset total_price for each client
         error_flag = 0; // Reset error_flag for each client
 
@@ -110,7 +110,7 @@ int main() {
                 write(order_pipe[i][1], "Client orders item\n", 20);
 
                 random_item = rand() % (MAX_ITEMS); // Generate random item
-                printf("Client orders item %d\n", random_item);
+                //printf("Client orders item %d\n", random_item);
                 process_order(order_pipe[i][1], result_pipe[i][0], random_item);
                 close(order_pipe[i][1]);
                 
@@ -120,12 +120,12 @@ int main() {
         print_result(y + 1, total_price, error_flag); 
     }
 
-    printf("Total orders: %d\n", sucs_orders + failed_orders);
+    printf("\nTotal orders: %d\n", sucs_orders + failed_orders);
     printf("Total successful orders: %d\n", sucs_orders);
     printf("Total failed orders: %d\n", failed_orders);
-    printf("Total profit: %.2f euro.\n", total_profit);
+    printf("Total profit: %.2f euro.\n\n", total_profit);
 
-   // printf("%d products were requested,where %d products were bought,totaling %.2f euros.\n", );
+   printf("%d products were requested,where %d products were bought,totaling %.2f euros.\n", sucs_orders + failed_orders, sucs_orders, total_profit);
     printf("%d requests were made,where %d succeeded and %d failed\n", sucs_request+failed_request, sucs_request, failed_request);
 
     
