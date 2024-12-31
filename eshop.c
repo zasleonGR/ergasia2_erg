@@ -1,5 +1,3 @@
-// Den ksero pos na kano na eumanizete mono sto total_profit ta total_prices ton sucsefull paragelion
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,8 +15,10 @@ int sucs_orders = 0;
 int failed_orders = 0;
 char Buffer[256] = { 0 };
 int random_item;
-double total_price; 
+double total_price; // Removed the global total_price
 int error_flag;
+int sucs_request;
+int failed_request;
 
 struct Product {
     char description[100];
@@ -26,7 +26,7 @@ struct Product {
     int item_count;
 };
 
-struct Product catalog[MAX_ITEMS]; 
+struct Product catalog[MAX_ITEMS]; // Adjusted to use MAX_ITEMS
 
 void initialize_catalog() {
     for (int i = 0; i < MAX_ITEMS; i++) {
@@ -44,7 +44,7 @@ void process_order(int read_fd, int write_fd, int item_number) {
     if (catalog[item_number].item_count > 0) {
         error_flag = 0;
         catalog[item_number].item_count--;
-        total_profit += catalog[item_number].price; // Only add to total_profit on success
+        
         sucs_orders++;
         total_price += catalog[item_number].price; // Add to total_price for this client
         printf("%.2f\n", total_price);
@@ -59,8 +59,11 @@ void print_result(int Client, double Final_price, int error_flag) {
     printf("Client %d:", Client);
     if (error_flag == 0) {
         printf(" Purchase complete, your total is: %.2f euro.\n", Final_price);
+        sucs_request++;
+        total_profit += Final_price; // Add to total_profit for this client
     } else {
         printf(" At least 1 product was unavailable, request failed.\n");
+        failed_request++;
     }
 }
 
@@ -110,9 +113,7 @@ int main() {
                 printf("Client orders item %d\n", random_item);
                 process_order(order_pipe[i][1], result_pipe[i][0], random_item);
                 close(order_pipe[i][1]);
-                if (error_flag == 1) {
-                    break; // Exit the loop if there was an error in the order
-                }
+                
             }
         }
         sleep(1);
@@ -124,10 +125,13 @@ int main() {
     printf("Total failed orders: %d\n", failed_orders);
     printf("Total profit: %.2f euro.\n", total_profit);
 
+   // printf("%d products were requested,where %d products were bought,totaling %.2f euros.\n", );
+    printf("%d requests were made,where %d succeeded and %d failed\n", sucs_request+failed_request, sucs_request, failed_request);
+
+    
     for (int i = 0; i < CLIENTS; i++) {
         wait(NULL);
     }
 
     return 0;
 }
-
