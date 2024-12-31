@@ -1,3 +1,5 @@
+// Den ksero pos na kano na eumanizete mono sto total_profit ta total_prices ton sucsefull paragelion
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
