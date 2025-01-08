@@ -99,25 +99,27 @@ int main() {
                 perror("fork fail");
                 exit(1);
             } else if (p == 0) { // Child process
-                close(order_pipe[i][1]);
-                sleep(0.5);
-                read(order_pipe[i][0], Buffer, sizeof(Buffer));
                 close(order_pipe[i][0]);
+                sleep(0.5);
+                random_item = rand() % (MAX_ITEMS); // Generate random item
+                write(order_pipe[i][1], random_item, sizeof(random_item));
+                close(order_pipe[i][1]);
+                if(i == ORDERS - 1) { // Client has made his final order.
+                    print_result(y + 1, total_price, error_flag);
+                }
                 exit(0);
             } else {  // Parent process
-                close(order_pipe[i][0]);
+                close(order_pipe[i][1]);
                 sleep(0.5);
-                write(order_pipe[i][1], "Client orders item\n", 20);
+                read(order_pipe[i][0], random_item, sizeof(random_item));
 
-                random_item = rand() % (MAX_ITEMS); // Generate random item
                 //printf("Client orders item %d\n", random_item);
                 process_order(order_pipe[i][1], result_pipe[i][0], random_item);
-                close(order_pipe[i][1]);
+                close(order_pipe[i][0]);
                 
             }
         }
-        sleep(1);
-        print_result(y + 1, total_price, error_flag); 
+        sleep(1); 
     }
 
     printf("\nTotal orders: %d\n", sucs_orders + failed_orders);
