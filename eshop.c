@@ -40,18 +40,19 @@ void initialize_prices() {
     }
 }
 
-void process_order(int read_fd, int write_fd, int item_number) {
+int process_order(int read_fd, int write_fd, int item_number) {
     if (catalog[item_number].item_count > 0) {
         error_flag = 0;
         catalog[item_number].item_count--;
         
         sucs_orders++;
         total_price += catalog[item_number].price; // Add to total_price for this client
-        printf("%.2f\n", total_price);
+        return 1;
     } else {
         error_flag = 1; // Set error flag for failed order
         failed_orders++;
         // Do not modify total_profit here
+        return 0;
     }
 }
 
@@ -62,7 +63,7 @@ void print_result(int Client, double Final_price, int error_flag) {
         sucs_request++;
         total_profit += Final_price; // Add to total_profit for this client
     } else {
-        printf(" At least 1 product was unavailable, request failed.\n");
+        printf("Product was unavailable, request failed.\n");
         failed_request++;
     }
 }
@@ -81,8 +82,9 @@ int main() {
         printf("CLIENT %d\n \n", y + 1);
         total_price = 0.0; // Reset total_price for each client
         error_flag = 0; // Reset error_flag for each client
+        int i = 0;
 
-        for (int i = 0; i < ORDERS; i++) {
+        while ( i < ORDERS && error_flag == 0) {
             // Create pipes for each client
             if (pipe(order_pipe[i]) == -1) {
                 fprintf(stderr, "Pipe1 failed");
@@ -100,24 +102,37 @@ int main() {
                 exit(1);
             } else if (p == 0) { // Child process
                 close(order_pipe[i][0]);
+                close(result_pipe[i][1]);
                 sleep(0.5);
                 random_item = rand() % (MAX_ITEMS); // Generate random item
                 write(order_pipe[i][1], random_item, sizeof(random_item));
-                close(order_pipe[i][1]);
-                if(i == ORDERS - 1) { // Client has made his final order.
+
+                int receipt_availability;
+                read(result_pipe[i][0], receipt_availability, sizeof(receipt_availability));
+                if(receipt_availability == 1)
+                    printf("Product available!");
+                
+                if(i == ORDERS - 1 || error_flag == 1) { // Client has made his final order or a product is unavailable.
                     print_result(y + 1, total_price, error_flag);
                 }
+                close(order_pipe[i][1]);
+                close(result_pipe[i][0];
                 exit(0);
             } else {  // Parent process
                 close(order_pipe[i][1]);
+                close(result_pipe[i][0]);
                 sleep(0.5);
-                read(order_pipe[i][0], random_item, sizeof(random_item));
 
-                //printf("Client orders item %d\n", random_item);
-                process_order(order_pipe[i][1], result_pipe[i][0], random_item);
-                close(order_pipe[i][0]);
+                read(order_pipe[i][0], random_item, sizeof(random_item));
                 
+                int feedback;
+                //printf("Client orders item %d\n", random_item);
+                feedback = process_order(order_pipe[i][1], result_pipe[i][0], random_item);
+                write(result_pipe[i][1], feedback, sizeof(feedback));
+                close(order_pipe[i][0]);
+                close(result_pipe[i][1];
             }
+            i++;
         }
         sleep(1); 
     }
