@@ -29,13 +29,15 @@ struct Product {
 struct Product catalog[MAX_ITEMS]; 
 
 void initialize_catalog() {
-    for (int i = 0; i < MAX_ITEMS; i++) {
+    int i;
+    for (i = 0; i < MAX_ITEMS; i++) {
         catalog[i].item_count = 2;
     }
 }
 
 void initialize_prices() {
-    for (int i = 0; i < MAX_ITEMS; i++) {
+    int i;
+    for (i= 0; i < MAX_ITEMS; i++) {
         catalog[i].price = rand() % (100 + 1);
     }
 }
@@ -77,12 +79,14 @@ int main() {
 
     initialize_catalog();
     initialize_prices();
-
-    for (int y = 0; y < CLIENTS; y++) {
+    
+    int i;
+    int y;
+    for (y = 0; y < CLIENTS; y++) {
         printf("CLIENT %d\n \n", y + 1);
         total_price = 0.0; // Reset total_price for each client
         error_flag = 0; // Reset error_flag for each client
-        int i = 0;
+        i = 0;
 
         while ( i < ORDERS && error_flag == 0) {
             // Create pipes for each client
@@ -116,7 +120,7 @@ int main() {
                     print_result(y + 1, total_price, error_flag);
                 }
                 close(order_pipe[i][1]);
-                close(result_pipe[i][0];
+                close(result_pipe[i][0]);
                 exit(0);
             } else {  // Parent process
                 close(order_pipe[i][1]);
@@ -130,7 +134,7 @@ int main() {
                 feedback = process_order(order_pipe[i][1], result_pipe[i][0], random_item);
                 write(result_pipe[i][1], &feedback, sizeof(feedback));
                 close(order_pipe[i][0]);
-                close(result_pipe[i][1];
+                close(result_pipe[i][1]);
             }
             i++;
         }
