@@ -105,10 +105,10 @@ int main() {
                 close(result_pipe[i][1]);
                 sleep(0.5);
                 random_item = rand() % (MAX_ITEMS); // Generate random item
-                write(order_pipe[i][1], random_item, sizeof(random_item));
+                write(order_pipe[i][1], &random_item, sizeof(random_item));
 
                 int receipt_availability;
-                read(result_pipe[i][0], receipt_availability, sizeof(receipt_availability));
+                read(result_pipe[i][0], &receipt_availability, sizeof(receipt_availability));
                 if(receipt_availability == 1)
                     printf("Product available!");
                 
@@ -123,12 +123,12 @@ int main() {
                 close(result_pipe[i][0]);
                 sleep(0.5);
 
-                read(order_pipe[i][0], random_item, sizeof(random_item));
+                read(order_pipe[i][0], &random_item, sizeof(random_item));
                 
                 int feedback;
                 //printf("Client orders item %d\n", random_item);
                 feedback = process_order(order_pipe[i][1], result_pipe[i][0], random_item);
-                write(result_pipe[i][1], feedback, sizeof(feedback));
+                write(result_pipe[i][1], &feedback, sizeof(feedback));
                 close(order_pipe[i][0]);
                 close(result_pipe[i][1];
             }
