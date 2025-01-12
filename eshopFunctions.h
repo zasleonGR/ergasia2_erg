@@ -1,4 +1,4 @@
-//headerfiles used.
+//header files used.
 
 #include <stdio.h>
 #include <stdlib.h>
