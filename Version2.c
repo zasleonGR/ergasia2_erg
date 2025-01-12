@@ -7,6 +7,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <time.h>
+#include "eshopFunctions.h"
 
 
 //Constast variables
