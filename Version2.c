@@ -145,8 +145,6 @@ int main() {
                 close(result_pipe[i][0]); 
                 sleep(0.5);
 
-
-                random_item = rand() % (MAX_ITEMS); // Generate random item
                 
                 read(order_pipe[i][0], Buffer, sizeof(Buffer)); //Reads the answere from the child process
                 process_order(order_pipe[i][1], result_pipe[i][0]);
