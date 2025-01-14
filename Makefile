@@ -1,14 +1,14 @@
 all: eshop
 
-eshop: Version2.o
+eshop: eshop.o
   echo "Compiling and producing eshop......."
-  gcc Version2.o -o eshop
+  gcc eshop.o -o eshop
   chmod +x eshop
 
-Version2.o: Version2.c
+eshop.o: eshop.c
   echo "Compiling the main file....."
-  gcc -c Version2.c
+  gcc -c eshop.c
 
 clean:
   echo "Removing....."
-  rm Version2.o eshop
+  rm eshop.o eshop
