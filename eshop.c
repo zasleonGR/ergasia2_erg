@@ -84,7 +84,6 @@ int main() {
                 sleep(0.5);
 
                 
-                read(order_pipe[i][0], Buffer, sizeof(Buffer)); //Reads the answer from the child process
                 process_order(order_pipe[i][1], result_pipe[i][0]);
                
 
