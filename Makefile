@@ -1,9 +1,9 @@
-all: eshop
+all: finaleshop
 
-eshop: eshop.o
+finaleshop: eshop.o
   echo "Compiling and producing eshop......."
-  gcc eshop.o -o eshop
-  chmod +x eshop
+  gcc eshop.o -o finaleshop
+  chmod +x finaleshop
 
 eshop.o: eshop.c
   echo "Compiling the main file....."
@@ -11,4 +11,4 @@ eshop.o: eshop.c
 
 clean:
   echo "Removing....."
-  rm eshop.o eshop
+  rm eshop.o finaleshop
